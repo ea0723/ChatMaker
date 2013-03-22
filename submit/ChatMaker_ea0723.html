@@ -21,11 +21,24 @@
     </div>
 <script>
 $(document).ready(function(){
+
     $('button').click(function(e){
-        Chat.display($('input').val());
+        Chat.send($('input').val());
         $('input').val("");
     });
+
+    var newMsg = function() {
+        Chat.fetch(function(getNew) {
+            $.each(getNew, function(i, message)
+                    Chat.display(message);
+            });
+        });
+    };
+	
+		setInterval(newMsg, 3000);
+
 });
+
 </script>
 
   </body>
