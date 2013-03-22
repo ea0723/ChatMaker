@@ -1,0 +1,32 @@
+<html>
+  <head>
+    <script src="http://chatmaker.herokuapp.com/ChatBuilder.js"></script>
+<!--
+    <script>
+      // your javascript code goes here!
+
+    </script>
+-->
+
+  </head>
+  <body>
+
+    <!-- Here are some elements you'll probably need in your chat app - uncomment them and set them up to allow users to send messages! -->
+
+    
+    <div>
+      <input class="draft" type="text"/> 
+      <button class="send">send</button>
+      <ul class="messages"></ul>
+    </div>
+<script>
+$(document).ready(function(){
+    $('button').click(function(e){
+        Chat.display($('input').val());
+        $('input').val("");
+    });
+});
+</script>
+
+  </body>
+</html>
