@@ -1,0 +1,40 @@
+<html>
+  <head>
+    <script src="http://chatmaker.herokuapp.com/ChatBuilder.js"></script>
+    <script src="http://ajax.googleapis.com/ajax/libs/jquery/1.9.1/jquery.min.js"></script>
+
+  </head>
+  <body>
+
+    <!-- Here are some elements you'll probably need in your chat app - uncomment them and set them up to allow users to send messages! -->
+
+    
+    <div>
+      <input class="draft" type="text"/> 
+      <button class="send">send</button>
+      <ul class="messages"></ul>
+    </div>
+<script>
+jQuery(function($){
+	
+	$('button').click(function(e){
+		Chat.send($('input').val());
+        $('input').val("");
+    });
+
+    var newMsg = function() {
+        Chat.fetch(function(getNew) {
+            $.each(getNew, function(i, message){
+				$('.messages').prepend('<li>'+message+'</li>');
+			});
+        });
+    };
+	
+		setInterval(newMsg, 3000);
+
+});
+
+</script>
+
+  </body>
+</html>
