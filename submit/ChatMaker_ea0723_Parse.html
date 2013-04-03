@@ -1,0 +1,73 @@
+<!DOCTYPE HTML>
+<html>
+    
+    <head>
+        <script src="http://code.jquery.com/jquery-1.9.1.min.js"></script>
+        <script src="http://www.parsecdn.com/js/parse-1.2.2.min.js"></script>
+        <script src="http://chatmaker.herokuapp.com/ChatBuilder.js"></script>
+        <!-- <script src="/chatjs_ean.js"></script> -->
+    </head>
+    
+    <body>
+        <div>
+            <input class="draft" type="text" />
+            <button class="send">send</button>
+            <ul class="messages"></ul>
+        </div>
+        <script>
+            jQuery(function ($) {
+
+                Parse.initialize("PqYWVyEzWT0PxsMEwlgHdBKU55lB7fspwGp2Pehp", "wILiSnUIIdSZrITPZFBASr9WX7HU4d3X5d4wzVEe");
+
+                var Post = Parse.Object.extend("Post");
+                var newPost = new Post();
+                var messages = [];
+                var msgText = ($('input').val());
+                var userName = Chat.username;
+                var objectId = newPost.id;
+                var updatedAt = newPost.updatedAt;
+                var createdAt = newPost.createdAt;
+
+                $('.send').click(function (e) {
+                    //newPost.set("text", ($('input').val()));
+                    newPost.save({
+                        text: msgText,
+                        username: userName
+                    }, {
+                        success: function (newPost) {
+                            console.log("newPost set");
+                        },
+                        error: function (newPost, error) {
+                            console.log("error: " + error);
+                        }
+                    });
+                    $('input').val(""); //resets 'input' to a clean value, ready for next message
+                });
+
+                var query = new Parse.Query(Post);
+                var exampleMsgQuery = new Parse.Query(Post);
+                	exampleMsgQuery.equalTo("exampleMessages", true); //to include example Messages into any query call as well as new messages
+                var fetchAllQuery = Parse.Query.or(query, exampleMsgQuery);
+
+                var myFetch = function (e) {
+                    query.descending("updatedAt");
+                    query.include("exampleMessages", true);
+                    fetchAllQuery.find({
+                        success: function (results) {
+                            for (var i = 0; i < results.length; i++) {
+                            $('.messages').prepend('<li>' + userName+ ': '+ results[i].get("text") + '</li>');    
+                            }
+                        },
+                        error: function (results, error) {
+                            console.log("error: " + error);
+                        }
+                    });
+                };
+
+                setInterval(myFetch, 5000);
+
+            });
+        </script>
+    </body>
+
+</html>
