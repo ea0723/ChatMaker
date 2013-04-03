@@ -1,7 +1,8 @@
 <html>
   <head>
-    <script src="http://chatmaker.herokuapp.com/ChatBuilder.js"></script>
     <script src="http://ajax.googleapis.com/ajax/libs/jquery/1.9.1/jquery.min.js"></script>
+    <script src="http://chatmaker.herokuapp.com/ChatBuilder.js"></script>
+    
 
   </head>
   <body>
@@ -16,21 +17,22 @@
     </div>
 <script>
 jQuery(function($){
+	//delete Chat.fetch;
 	
 	$('button').click(function(e){
-		Chat.send($('input').val());
+        Chat.send($('input').val());
         $('input').val("");
     });
 
-    var newMsg = function() {
-        Chat.fetch(function(getNew) {
-            $.each(getNew, function(i, message){
-				$('.messages').prepend('<li>'+message+'</li>');
-			});
+    var newMsg = function(){
+        Chat.fetch(function (messages) {
+            $.each(messages, function (i, text) {
+                $('.messages').append('<li>' + text + '</li>');
+            });
         });
     };
-	
-		setInterval(newMsg, 3000);
+
+    setInterval(newMsg, 3000);
 
 });
 

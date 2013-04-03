@@ -29,8 +29,8 @@ $(document).ready(function(){
 
     var newMsg = function() {
         Chat.fetch(function(getNew) {
-            $.each(getNew, function(i, message)
-                    Chat.display(message);
+            $.each(getNew, function(i, message){
+			Chat.display(message);
             });
         });
     };

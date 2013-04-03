@@ -1,0 +1,53 @@
+<!DOCTYPE HTML>
+<html>
+    
+    <head>
+        <script src="http://code.jquery.com/jquery-1.9.1.min.js"></script>
+        <script src="http://www.parsecdn.com/js/parse-1.2.2.min.js"></script>
+        <script src="http://chatmaker.herokuapp.com/ChatBuilder.js"></script>
+        <!-- <script src="/chatjs_ean.js"></script> -->
+    </head>
+    
+    <body>
+        <div>
+            <input class="draft" type="text" />
+            <button class="send">send</button>
+            <ul class="messages"></ul>
+        </div>
+        <script>
+            jQuery(function ($) {
+
+                $('button').click(function (e) {
+                    Chat.send($('input').val());
+                    $('input').val(""); //resets 'input' to a clean value, ready for next message
+                });
+                
+                function myFetch() {
+                    $.ajax('https://api.parse.com/1/classes/chats/', { 
+                        data: {text: 'text'},
+                        datatype: 'jsonp', //I tried using dataType with a cap T but it kept erroring, this doesn't
+                        cache: false, 
+                        complete: function(results){
+                            console.log(results.length);
+                        },
+                        success: function(results){
+                            $.each(results, function (i, messages) {
+                                $('.messages').append('<li>' + results + '</li>');
+                                //i've tried results.messages, results[i].get(messages), results[messages], results.messages[text]... 
+                            })
+                            console.log("Success... rendering");                            
+                        },
+                        error: function(error) {
+                            $('.messages').prepend('<li>' + "D'oh!! an error..." + '</li>');
+                            console.log(error.EvalError());
+                        }
+                    });
+                };
+
+                setInterval(myFetch, 3000);
+
+            });
+        </script>
+    </body>
+
+</html>
