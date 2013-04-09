@@ -20,22 +20,21 @@
                 Parse.initialize("PqYWVyEzWT0PxsMEwlgHdBKU55lB7fspwGp2Pehp", "wILiSnUIIdSZrITPZFBASr9WX7HU4d3X5d4wzVEe");
 
                 var Post = Parse.Object.extend("Post");
-                var newPost = new Post();
-                var messages = [];
-                var msgText = ($('input').val());
-                var userName = Chat.username;
+                var newPost = new Post(); 
                 var objectId = newPost.id;
                 var updatedAt = newPost.updatedAt;
                 var createdAt = newPost.createdAt;
 
-                $('.send').click(function (e) {
-                    //newPost.set("text", ($('input').val()));
+                $('div button.send').on('click', function(){
+                    var msgText = ($('input').val());
+                    var userName = Chat.username;
                     newPost.save({
-                        text: msgText,
-                        username: userName
+                    	text: msgText,
+                        username: userName,
+                        postedMsg: false,
                     }, {
                         success: function (newPost) {
-                            console.log("newPost set");
+                            console.log("newPost set "+msgText);
                         },
                         error: function (newPost, error) {
                             console.log("error: " + error);
@@ -44,27 +43,51 @@
                     $('input').val(""); //resets 'input' to a clean value, ready for next message
                 });
 
+
+				//create function that pulls random example messages so that all are not displayed at the same time, but one at a time 
+                //function randomMsg() { Math.floor((Math.random() * 5) +1) }
+
                 var query = new Parse.Query(Post);
                 var exampleMsgQuery = new Parse.Query(Post);
                 	exampleMsgQuery.equalTo("exampleMessages", true); //to include example Messages into any query call as well as new messages
+                var postedMsgQuery = new Parse.Query(Post);
+                	postedMsgQuery.equalTo("postedMsg", false);
                 var fetchAllQuery = Parse.Query.or(query, exampleMsgQuery);
 
-                var myFetch = function (e) {
+                var myFetch = function() {
                     query.descending("updatedAt");
-                    query.include("exampleMessages", true);
+                    query.include("postedMsg", false);
                     fetchAllQuery.find({
                         success: function (results) {
                             for (var i = 0; i < results.length; i++) {
-                            $('.messages').prepend('<li>' + userName+ ': '+ results[i].get("text") + '</li>');    
+                            	$('.messages').prepend('<li>' + results[i].get("username") + ': '+ results[i].get("text") + '</li>');
                             }
                         },
                         error: function (results, error) {
                             console.log("error: " + error);
-                        }
+                        },                    
                     });
                 };
 
-                setInterval(myFetch, 5000);
+                var updatePost = function(){
+                	query.descending("updatedAt");
+                	query.equalTo("postedMsg", false);
+                    query.find({
+	                    success: function (results) {
+	                    	for (var i = 0; i < results.length; i++) {
+	                    		var post = results[i].get("postedMsg");
+	                    		results[i].set("postedMsg", true);
+	                    		post.save();
+	                    	}
+	                    },
+	                    error: function (postedMsg, error) {
+	                    	console.log("error: " + error);
+	                    }
+                	})
+                };
+
+                setInterval(myFetch, 4000);
+                setInterval(updatePost, 4100)
 
             });
         </script>

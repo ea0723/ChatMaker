@@ -12,30 +12,30 @@
         <div>
             <input class="draft" type="text" />
             <button class="send">send</button>
-            <ul class="messages"></ul>
+            <ul class="messages" >
+            </ul>
         </div>
         <script>
             jQuery(function ($) {
-
-                $('button').click(function (e) {
+                
+                $('button').on('click', function (e) {
                     Chat.send($('input').val());
                     $('input').val(""); //resets 'input' to a clean value, ready for next message
                 });
                 
                 function myFetch() {
-                    $.ajax('https://api.parse.com/1/classes/chats/', { 
+                    $("ul.messages > li").slice(0, 7).show();
+                    $.ajax('https://api.parse.com/1/classes/chats', { 
                         data: {text: 'text'},
-                        datatype: 'jsonp', //I tried using dataType with a cap T but it kept erroring, this doesn't
+                        datatype: 'jsonp',
                         cache: false, 
-                        complete: function(results){
-                            console.log(results.length);
-                        },
                         success: function(results){
+                            console.log("Success... rendering");    
                             $.each(results, function (i, messages) {
-                                $('.messages').append('<li>' + results + '</li>');
-                                //i've tried results.messages, results[i].get(messages), results[messages], results.messages[text]... 
+                                $.each(messages, function (j, message) {
+                                    $('.messages').prepend('<li>' + message.text + '</li>');
+                                });
                             })
-                            console.log("Success... rendering");                            
                         },
                         error: function(error) {
                             $('.messages').prepend('<li>' + "D'oh!! an error..." + '</li>');

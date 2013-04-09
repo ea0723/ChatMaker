@@ -10,7 +10,7 @@
     
     <body>
         <div>
-            <input class="draft" type="text" />
+            <input class="draft" type="text" ></input>
             <button class="send">send</button>
             <ul class="messages" ></ul>
         </div>
@@ -20,7 +20,9 @@
                 var username = Chat.username;
 
                 $('div button.send').on('click', function(){
-                    var dataToSend = JSON.stringify({text: $('input').val(), username: Chat.username});
+                    msgText = (Chat.username +": "+ $('input').val()).toString();
+                    console.log(msgText);
+                    var dataToSend = JSON.stringify({text: msgText, username: Chat.username});
                     $.ajax({
                         type: 'POST',
                         contentType: 'application/json',
